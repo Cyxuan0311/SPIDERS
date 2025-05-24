@@ -29,11 +29,19 @@ public class NewsController {
         return service.getById(id);
     }
 
+    public News crawlDetailPage(String url) throws Exception {
+        return service.crawlAndSaveDetail(url);
+    }
+
     public List<News> getAllNews() {
         return service.getAll();
     }
 
     public List<News> queryNews(String keyword) {
         return service.search(keyword);
+    }
+
+    public void crawlDynamicNews(String url) throws Exception {
+        service.crawlAndSaveDynamic(url);
     }
 }

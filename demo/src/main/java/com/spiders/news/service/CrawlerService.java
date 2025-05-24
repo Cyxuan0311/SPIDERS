@@ -2,9 +2,18 @@ package com.spiders.news.service;
 
 import com.spiders.news.model.News;
 import org.jsoup.Jsoup;
+import java.time.Duration;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.WebDriver;
+
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -17,7 +26,41 @@ public class CrawlerService {
     private static final int THREAD_POOL_SIZE = 3;
     private static final int TIMEOUT = 15000;
     private static final Random random = new Random();
+    private WebDriver driver;
     private static final SimpleDateFormat SINA_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    public CrawlerService() {
+        // 初始化WebDriver
+        System.setProperty("webdriver.chrome.driver", "demo\\src\\main\\resources\\lib\\chromedriver.exe");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // 无头模式
+        driver = new ChromeDriver(options);
+    }
+
+     public List<News> crawlDynamicPage(String url) {
+        List<News> newsList = new ArrayList<>();
+        try {
+            driver.get(url);
+            // 等待动态内容加载
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            
+            // 示例：获取动态加载的新闻列表
+            List<WebElement> newsElements = wait.until(ExpectedConditions
+                .presenceOfAllElementsLocatedBy(By.cssSelector(".news-item")));
+            
+            for (WebElement element : newsElements) {
+                News news = new News();
+                news.setTitle(element.findElement(By.cssSelector(".title")).getText());
+                news.setContent(element.findElement(By.cssSelector(".content")).getText());
+                // 其他字段...
+                newsList.add(news);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newsList;
+    }
+    
 
     public List<News> crawlNews(String baseUrl, int pageCount) throws InterruptedException, ExecutionException {
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -46,6 +89,29 @@ public class CrawlerService {
         }
         executor.shutdown();
         return allNews;
+    }
+
+     public News crawlDetailPage(String url) throws IOException {
+        Document doc = Jsoup.connect(url)
+                .userAgent(getRandomUserAgent())
+                .timeout(TIMEOUT)
+                .get();
+
+        News news = new News();
+        
+        // 提取详情页特有信息
+        Element contentEl = doc.selectFirst("#article-content");
+        if (contentEl != null) {
+            news.setContent(contentEl.text().trim());
+        }
+        
+        // 可以添加更多详情页特有的字段提取逻辑
+        Element viewCountEl = doc.selectFirst(".view-count");
+        if (viewCountEl != null) {
+            news.setViewCount(Integer.parseInt(viewCountEl.text().replaceAll("\\D+", "")));
+        }
+
+        return news;
     }
 
     private List<News> crawlChannel(String baseUrl, String channel, int pageCount) throws IOException {

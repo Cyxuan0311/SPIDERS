@@ -44,4 +44,17 @@ public class NewsService {
                 .filter(news -> news.getTitle().contains(kw))
                 .collect(Collectors.toList());
     }
+
+    public void crawlAndSaveDynamic(String url){
+        List<News> newsList = crawler.crawlDynamicPage(url);
+            for (News news : newsList) {
+        dao.insert(news);
+        }
+    }
+
+    public News crawlAndSaveDetail(String url) throws Exception {
+        News news = crawler.crawlDetailPage(url);
+        dao.insert(news);
+        return news;
+    }
 }
