@@ -1,3 +1,5 @@
 # some file
 *.class
 explain.md
+
+/*.vscode*/
