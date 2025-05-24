@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS spiders
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_general_ci;
+USE spiders;
+
+CREATE TABLE IF NOT EXISTS news (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  reporter VARCHAR(100),
+  source VARCHAR(100),
+  views INT DEFAULT 0,
+  publish_time DATETIME,
+  reviewer VARCHAR(100),
+  content TEXT,
+  INDEX idx_publish_time (publish_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
