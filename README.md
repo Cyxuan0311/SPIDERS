@@ -47,11 +47,11 @@ CREATE TABLE IF NOT EXISTS news (
 ```
 
 ### 3️⃣ 配置数据库连接
-在项目代码中配置数据库连接信息，配置文件为：
+在项目代码中配置数据库连接信息，配置文件`DBUtil.java`为：
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/news_spider?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+url=jdbc:mysql://localhost:3306/news_spider?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+username=your_username
+password=your_password
 ```
 
 ### 4️⃣ 构建项目
