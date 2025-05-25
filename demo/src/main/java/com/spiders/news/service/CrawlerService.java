@@ -146,7 +146,7 @@ public class CrawlerService {
         return newsList;
     }
 
-    private News crawlArticle(String articleUrl) throws IOException {
+    public News crawlArticle(String articleUrl) throws IOException {
         Document doc = Jsoup.connect(articleUrl)
                 .userAgent(getRandomUserAgent())
                 .timeout(TIMEOUT)
@@ -207,7 +207,7 @@ public class CrawlerService {
         return news;
     }
 
-    private static String getRandomUserAgent() {
+    public static String getRandomUserAgent() {
         String[] userAgents = {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
@@ -215,5 +215,13 @@ public class CrawlerService {
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
         };
         return userAgents[random.nextInt(userAgents.length)];
+    }
+
+    public void setDriver(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    public CrawlerService(WebDriver driver) {
+        this.driver = driver;
     }
 }

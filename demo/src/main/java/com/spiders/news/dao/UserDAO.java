@@ -9,6 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDAO {
+
+    private static final int MAX_LOGIN_ATTEMPTS = 3;
+    private static int loginAttempts = 0;
     
     // MD5加密方法
     private static String md5(String input) {
@@ -46,12 +49,25 @@ public class UserDAO {
     }
 
     public static boolean validateUser(String username, String password) throws SQLException {
+        if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+            System.err.println("登录尝试次数过多，程序即将退出");
+            System.exit(1);
+        }
+        
         String sql = "SELECT password FROM users WHERE username = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getString("password").equals(md5(password)); // 加密后比较
+            
+            boolean isValid = rs.next() && rs.getString("password").equals(md5(password));
+            if (!isValid) {
+                loginAttempts++;
+                System.err.println("登录失败，剩余尝试次数: " + (MAX_LOGIN_ATTEMPTS - loginAttempts));
+            } else {
+                loginAttempts = 0; // 登录成功重置计数器
+            }
+            return isValid;
         }
     }
 }

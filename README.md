@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS news (
 ```
 
 ### 3️⃣ 配置数据库连接
-在项目代码中配置数据库连接信息，配置文件`DBUtil.java`为：
+在项目代码中配置数据库连接信息，配置文件`demo\src\main\resources\config\config.properties`为：
 ```properties
 url=jdbc:mysql://localhost:3306/news_spider?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
 username=your_username

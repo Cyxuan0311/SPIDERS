@@ -1,5 +1,12 @@
-# some file
+# 忽略所有.class文件
 *.class
+
+# 忽略特定的explain.md文件
 explain.md
 
-/*.vscode*/
+# 忽略.vscode文件夹
+.vscode/
+
+# 忽略target文件夹
+target/
+**/target/
